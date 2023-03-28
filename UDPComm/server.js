@@ -1,17 +1,19 @@
-const dgram = require('dgram');
-const server = dgram.createSocket('udp4');
+const net = require('net');
 
-// Configure UDP socket to listen for MAVLink data
-const port = 5501;
-server.on('listening', () => {
-    const address = server.address();
-    console.log(`MAVLink server listening on ${address.address}:${address.port}`);
-});
-server.on('message', (data, remote) => {
-    // Parse incoming data as JSON and process as desired
-    const jsonMsg = JSON.parse(data.toString('utf-8'));
-    console.log(jsonMsg);
+const server = net.createServer((socket) => {
+  console.log('Client connected');
+
+  socket.on('data', (data) => {
+    // console.log(`Received data from client: ${data}`);
+    console.log(`${data}`);
+    // Process the received data as needed
+  });
+
+  socket.on('end', () => {
+    console.log('Client disconnected');
+  });
 });
 
-// Start listening on UDP socket
-server.bind(port);
+server.listen(8080, () => {
+  console.log('Server listening on port 8080');
+});

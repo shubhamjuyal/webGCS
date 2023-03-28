@@ -1,27 +1,35 @@
-import socket
-import json
 from pymavlink import mavutil
+import json
+import socket
+UDP_IP = "127.0.0.1"
+UDP_PORT = 14550
 
-# Configure UDP socket to listen for MAVLink data
-ip_address = '127.0.0.1'
-udp_port = 14550
-udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-udp_socket.bind((ip_address, udp_port))
+TCP_IP = "127.0.0.1"
+TCP_PORT = 8080
 
-# Connect to Node.js server
-host = '127.0.0.1'
-port = 5501
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.connect((host, port))
+# Connect to the MAVLink UDP stream
+mavlink_conn = mavutil.mavlink_connection('udp:{0}:{1}'.format(UDP_IP, UDP_PORT))
 
-# Loop to read MAVLink messages and send to Node.js server
+# Connect to the TCP server
+tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+tcp_sock.connect((TCP_IP, TCP_PORT))
+
+# # Send a MAVLink message to the server
+# msg = mavutil.mavlink.MAVLink_heartbeat_message(
+#     mavutil.mavlink.MAV_TYPE_GCS,
+#     mavutil.mavlink.MAV_AUTOPILOT_INVALID,
+#     0,
+#     0,
+#     0)
+# mavlink_conn.send(msg)
+
+# Receive a MAVLink message from the UDP stream
 while True:
-    # Receive data from UDP socket
-    data, addr = udp_socket.recvfrom(14550)
-    msg = mavutil.mavlink.MAVLink(data)
-    msg_str = str(msg)
-    print("Received message:", msg_str)
-            
-    # Encode MAVLink message as JSON and send to server
-    # json_msg = msg.to_dict()
-    # sock.sendall(json.dumps(json_msg).encode('utf-8'))
+    msg = mavlink_conn.recv_msg()
+    if msg is not None:
+        # Convert the MAVLink message to a dictionary
+        msg_dict = msg.to_dict()
+        # Convert the dictionary to a JSON-formatted string
+        json_msg = json.dumps(msg_dict)
+        # Send the JSON-formatted message to the TCP server
+        tcp_sock.sendall(json_msg.encode())
