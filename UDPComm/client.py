@@ -1,6 +1,7 @@
 from pymavlink import mavutil
 import json
 import socket
+import time
 UDP_IP = "127.0.0.1"
 UDP_PORT = 14550
 
@@ -31,5 +32,7 @@ while True:
         msg_dict = msg.to_dict()
         # Convert the dictionary to a JSON-formatted string
         json_msg = json.dumps(msg_dict)
+        encoded_json_msg = json_msg.encode()
         # Send the JSON-formatted message to the TCP server
-        tcp_sock.sendall(json_msg.encode())
+        tcp_sock.sendall(encoded_json_msg)
+        time.sleep(0.00001)
