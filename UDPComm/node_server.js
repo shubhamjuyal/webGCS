@@ -1,5 +1,6 @@
 const net = require('net');
 
+
 const server = net.createServer((socket) => {
   console.log('Client connected');
 
@@ -17,6 +18,17 @@ const server = net.createServer((socket) => {
   });
 });
 
-server.listen(8080, () => {
+// const io = require('socket.io')(server, {
+//   cors: {
+//     origin: '*',
+//   }
+// });
+
+// io.on('connection', (socket) => {
+// console.log('a user connected');
+// });
+
+
+server.listen(8000, () => {
   console.log('Server listening on port 8080');
 });

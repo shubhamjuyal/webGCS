@@ -6,7 +6,7 @@ UDP_IP = "127.0.0.1"
 UDP_PORT = 14550
 
 TCP_IP = "127.0.0.1"
-TCP_PORT = 8080
+TCP_PORT = 8000
 
 # Connect to the MAVLink UDP stream
 mavlink_conn = mavutil.mavlink_connection('udp:{0}:{1}'.format(UDP_IP, UDP_PORT))
@@ -35,4 +35,4 @@ while True:
         encoded_json_msg = json_msg.encode()
         # Send the JSON-formatted message to the TCP server
         tcp_sock.sendall(encoded_json_msg)
-        time.sleep(0.00001)
+        time.sleep(0.0000000001)
