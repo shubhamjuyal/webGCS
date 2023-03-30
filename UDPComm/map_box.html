@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Custom marker icons</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js'></script>
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"> </script>
+<link href='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css' rel='stylesheet' />
+
+<!-- SEVER FOR LAT & LONG -->
+<script type="text/javascript" src="map.js" async></script>
+
+<style>
+  body { margin:0; padding:0; }
+  #map { position:absolute; top:0; bottom:0; width:100%; }
+</style>
+
+</head>
+
+<body>
+
+    <div id='map'></div>
+
+<!-- MAPBOX SCRIPT -->
+<script>
+    L.mapbox.accessToken = 'pk.eyJ1Ijoicm9kZWxsYWFlcm9zcGFjZSIsImEiOiJjbGZ1eHoxOHgwMXg3M25wZG1qbmE2MWt3In0.vk3oVYhuldbPNNOu-7VbfA';
+    var map = L.mapbox.map('map')
+        .setView([28.7041,77.1025], 8)
+        .addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
+
+    var myLayer = L.mapbox.featureLayer().addTo(map);
+
+    var geoJson = {
+    type: 'FeatureCollection',
+    features: [{
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [77.1025, 28.7041] // DELHI
+        },
+        "properties": {
+            "title": "Drone",
+            "icon": {
+                "iconUrl": "/point.png",
+                "iconSize": [50, 50], // size of the icon
+                "iconAnchor": [25, 25], // point of the icon which will correspond to marker's location
+                "popupAnchor": [0, -25], // point from which the popup should open relative to the iconAnchor
+                "className": "dot"
+            }
+        }
+    }]
+    };
+
+    // Set a custom icon on each marker based on feature properties.
+    myLayer.on('layeradd', function(e) {
+        var marker = e.layer,
+            feature = marker.feature;
+
+        marker.setIcon(L.icon(feature.properties.icon));
+    });
+
+    // Add features to the map.
+    myLayer.setGeoJSON(geoJson);
+
+</script>
+
+
+</body>
+</html>
