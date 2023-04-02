@@ -56,7 +56,7 @@ tcpServer.on('connection', (socket) => {
 
     	const jsndata = JSON.parse(data);
     	// if(jsndata)
-      	// console.log(jsndata);
+      	console.log(jsndata);
 
     	// Send the data to connected Socket.IO clients
     	io.emit('data', jsndata);
